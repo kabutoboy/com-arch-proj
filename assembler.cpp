@@ -34,14 +34,14 @@ bool isNumber(string s) {
 void parseLabels() {
 	for (int32_t lineAddress = 0; lineAddress < assembly.size(); lineAddress++) {
 		string line = assembly.at(lineAddress);
-		size_t found;
+		size_t foundAt;
 		size_t lookingAt = 0;
-		found = line.find(delim);
-		if (found == string::npos) {
-			found = line.length();
+		foundAt = line.find(delim);
+		if (foundAt == string::npos) {
+			foundAt = line.length();
 		}
-		if (found > lookingAt) {
-			size_t len = found - lookingAt;
+		if (foundAt > lookingAt) {
+			size_t len = foundAt - lookingAt;
 			string field = line.substr(lookingAt, len);
 			labels[field] = lineAddress;
 		}
@@ -57,33 +57,33 @@ void parseAll() {
 		//cout << "parsing line " << lineAddress << endl;
 		int32_t code = 0;
 		string line = assembly.at(lineAddress);
-		size_t found;
+		size_t foundAt;
 		size_t lookingAt = 0;
 		// label
-		found = line.find(delim);
-		if (found == string::npos) {
-			found = line.length();
+		foundAt = line.find(delim);
+		if (foundAt == string::npos) {
+			foundAt = line.length();
 		}
 		string label;
-		if (found > lookingAt) {
-			size_t len = found - lookingAt;
+		if (foundAt > lookingAt) {
+			size_t len = foundAt - lookingAt;
 			string field = line.substr(lookingAt, len);
 			label = field;
 			//cout << "label is " << label << endl;
 		}
 		// instruction
-		if (found >= line.length()) {
+		if (foundAt >= line.length()) {
 			continue;
 		}
-		lookingAt = found + 1;
-		found = line.find(delim, lookingAt);
-		if (found == string::npos) {
-			found = line.length();
+		lookingAt = foundAt + 1;
+		foundAt = line.find(delim, lookingAt);
+		if (foundAt == string::npos) {
+			foundAt = line.length();
 		}
 		string instruction;
 		int8_t opcode;
-		if (found > lookingAt) {
-			size_t len = found - lookingAt;
+		if (foundAt > lookingAt) {
+			size_t len = foundAt - lookingAt;
 			string field = line.substr(lookingAt, len);
 			instruction = field;
 			//cout << "instruction is " << instruction << endl;
@@ -103,17 +103,17 @@ void parseAll() {
 			}
 		}
 		// regA
-		if (found >= line.length()) {
+		if (foundAt >= line.length()) {
 			continue;
 		}
-		lookingAt = found + 1;
-		found = line.find(delim, lookingAt);
-		if (found == string::npos) {
-			found = line.length();
+		lookingAt = foundAt + 1;
+		foundAt = line.find(delim, lookingAt);
+		if (foundAt == string::npos) {
+			foundAt = line.length();
 		}
 		int8_t regA;
-		if (found > lookingAt) {
-			size_t len = found - lookingAt;
+		if (foundAt > lookingAt) {
+			size_t len = foundAt - lookingAt;
 			string field = line.substr(lookingAt, len);
 			if (instruction == ".fill") {
 				//cout << "fillVal is " << field << endl;
@@ -132,17 +132,17 @@ void parseAll() {
 			code += regA;
 		}
 		// regB
-		if (found >= line.length()) {
+		if (foundAt >= line.length()) {
 			continue;
 		}
-		lookingAt = found + 1;
-		found = line.find(delim, lookingAt);
-		if (found == string::npos) {
-			found = line.length();
+		lookingAt = foundAt + 1;
+		foundAt = line.find(delim, lookingAt);
+		if (foundAt == string::npos) {
+			foundAt = line.length();
 		}
 		int8_t regB;
-		if (found > lookingAt) {
-			size_t len = found - lookingAt;
+		if (foundAt > lookingAt) {
+			size_t len = foundAt - lookingAt;
 			string field = line.substr(lookingAt, len);
 			//cout << "regB is " << field << endl;
 			//if (isNumber(field)) {
@@ -155,16 +155,16 @@ void parseAll() {
 			code += regB;
 		}
 		// field3
-		if (found >= line.length()) {
+		if (foundAt >= line.length()) {
 			continue;
 		}
-		lookingAt = found + 1;
-		found = line.find(delim, lookingAt);
-		if (found == string::npos) {
-			found = line.length();
+		lookingAt = foundAt + 1;
+		foundAt = line.find(delim, lookingAt);
+		if (foundAt == string::npos) {
+			foundAt = line.length();
 		}
-		if (found > lookingAt) {
-			size_t len = found - lookingAt;
+		if (foundAt > lookingAt) {
+			size_t len = foundAt - lookingAt;
 			string field = line.substr(lookingAt, len);
 			code <<= 16;
 			int8_t destReg;
