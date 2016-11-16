@@ -7,11 +7,24 @@
 using namespace std;
 
 map<string, int32_t> labels;
-map<string, int32_t> fills;
 map<string, int8_t> opcodes;
 vector<string> assembly;
 vector<int32_t> machineCode;
 string delim = "\t";
+//bool verbose = false;
+
+string toBin(int n) {
+	string ret = "";
+	for (int i = 31; i >= 0; i--) {
+		int j = 1 << i;
+		if (n & j) {
+			ret += "1";
+		} else {
+			ret += "0";
+		}
+	}
+	return ret;
+}
 
 // loose logic
 bool isNumber(string s) {
@@ -39,9 +52,9 @@ void parseAll() {
 	machineCode.clear();
 	for (int32_t lineAddress = 0; lineAddress < assembly.size(); lineAddress++) {
 		if (lineAddress > 0) {
-			cout << "----------------" << endl;
+			//cout << "----------------" << endl;
 		}
-		cout << "parsing line " << lineAddress << endl;
+		//cout << "parsing line " << lineAddress << endl;
 		int32_t code = 0;
 		string line = assembly.at(lineAddress);
 		size_t found;
@@ -56,7 +69,7 @@ void parseAll() {
 			size_t len = found - lookingAt;
 			string field = line.substr(lookingAt, len);
 			label = field;
-			cout << "label is " << label << endl;
+			//cout << "label is " << label << endl;
 		}
 		// instruction
 		if (found >= line.length()) {
@@ -73,7 +86,7 @@ void parseAll() {
 			size_t len = found - lookingAt;
 			string field = line.substr(lookingAt, len);
 			instruction = field;
-			cout << "instruction is " << instruction << endl;
+			//cout << "instruction is " << instruction << endl;
 			if (instruction != ".fill") {
 				opcode = opcodes[instruction];
 				code <<= 3;
@@ -103,7 +116,7 @@ void parseAll() {
 			size_t len = found - lookingAt;
 			string field = line.substr(lookingAt, len);
 			if (instruction == ".fill") {
-				cout << "fillVal is " << field << endl;
+				//cout << "fillVal is " << field << endl;
 				int32_t fillVal;
 				if (isNumber(field)) {
 					fillVal = stoi(field);
@@ -113,7 +126,7 @@ void parseAll() {
 				machineCode.push_back(fillVal);
 				continue;
 			}
-			cout << "regA is " << field << endl;
+			//cout << "regA is " << field << endl;
 			regA = stoi(field);
 			code <<= 3;
 			code += regA;
@@ -131,7 +144,7 @@ void parseAll() {
 		if (found > lookingAt) {
 			size_t len = found - lookingAt;
 			string field = line.substr(lookingAt, len);
-			cout << "regB is " << field << endl;
+			//cout << "regB is " << field << endl;
 			//if (isNumber(field)) {
 			//	labels[label] = stoi(field);
 			//} else {
@@ -168,13 +181,13 @@ void parseAll() {
 			switch (opcode) {
 				case 0:
 				case 1:
-					cout << "destReg is " << field << "(" << destReg << ")" << endl;
+					//cout << "destReg is " << field << "(" << destReg << ")" << endl;
 					code += destReg;
 					break;
 				case 2:
 				case 3:
 				case 4:
-					cout << "offsetField is " << field << "(" << offsetField << ")" << endl;
+					//cout << "offsetField is " << field << "(" << offsetField << ")" << endl;
 					code += (int32_t)offsetField & (int32_t)((1 << 16) - 1);
 					break;
 				default:
@@ -184,7 +197,15 @@ void parseAll() {
 		machineCode.push_back(code);
 	}
 }
-int main() {
+
+int main(int argc, char *argv[]) {
+
+	//if (argc > 1) {
+	//	if (argv[1] == "-v") {
+	//		verbose = true;
+	//	}
+	//}
+
 	opcodes["add"]  = 0;
 	opcodes["nand"] = 1;
 	opcodes["lw"]   = 2;
@@ -198,57 +219,23 @@ int main() {
 	while(getline(cin, line)) {
 		assembly.push_back(line);
 	}
-	//for (int32_t lineAddress = 0; lineAddress < assembly.size(); lineAddress++) {
-	//	string line = assembly.at(lineAddress);
-	//	size_t found;
-	//	size_t lookingAt = 0;
-	//	string delim = "\t";
-	//	for (int col = 0; col < 6; col++) {
-	//		found = line.find(delim, lookingAt);
-	//		if (found == string::npos) {
-	//			break;
-	//		}
-	//		if (found > lookingAt) {
-	//			size_t len = found - lookingAt;
-	//			string field = line.substr(lookingAt, len);
-	//			switch (col) {
-	//				case 0: // label
-	//					labels[field] = lineAddress;
-	//					break;
-	//				case 1: // instruction
 
-	//					break;
-	//				case 2: // regA
-
-	//					break;
-	//				case 3: // regB
-
-	//					break;
-	//				case 4: // destReg/offset
-
-	//					break;
-	//				case 5: // comment
-
-	//					break;
-	//				default:
-
-	//					break;
-	//			}
-	//			lookingAt = found + 1;
-	//		}
-	//	}
-	//}
-	cout << "parseLabels . . ." << endl;
+	//cout << "parseLabels . . ." << endl;
 	parseLabels();
 	for (auto p: labels) {
-		cout << "label " << p.first << " has value " << p.second << endl;
+		//cout << "label " << p.first << " has value " << p.second << endl;
 	}
-	cout << "parseAll . . ." << endl;
+
+	//cout << "parseAll . . ." << endl;
 	parseAll();
-	cout << "done . . ." << endl;
+
+	//cout << "done" << endl;
+
 	for (int i = 0; i < machineCode.size(); i++) {
 		int32_t code = machineCode[i];
-		printf("(address %d) %d (0x%x)\n", i, code, code);
+		//printf("(address %d) %d (0x%x) (", i, code, code);
+		cout << toBin(code) <<  endl;
 	}
+
 	return 0;
 }
