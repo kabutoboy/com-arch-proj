@@ -111,12 +111,12 @@ int main() {
 
     while (!halt) {
 
-        totalIns += 1;
         i = ins[pc];
 
         printState();
 
         pc += 1;
+        totalIns += 1;
 
         int8_t opcode   = getOpcode(i),
                a        = getRegA(i),
