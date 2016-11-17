@@ -32,8 +32,8 @@ base	lw	0	6	pos1
 	add	6	3	3	
 	jalr	7	6		
 	noop
-N	.fill	7
-R	.fill	3
+N	.fill	10
+R	.fill	5
 sp	.fill	65536
 caddr	.fill	combi
 pos1	.fill	1
