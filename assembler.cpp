@@ -153,6 +153,7 @@ void parseAll() {
 			regB = stoi(field);
 			code <<= 3;
 			code += regB;
+			code <<= 16;
 		}
 		// field3
 		if (foundAt >= line.length()) {
@@ -166,7 +167,6 @@ void parseAll() {
 		if (foundAt > lookingAt) {
 			size_t len = foundAt - lookingAt;
 			string field = line.substr(lookingAt, len);
-			code <<= 16;
 			int8_t destReg;
 			int16_t offsetField;
 			if (isNumber(field)) {
@@ -234,7 +234,8 @@ int main(int argc, char *argv[]) {
 	for (int i = 0; i < machineCode.size(); i++) {
 		int32_t code = machineCode[i];
 		//printf("(address %d) %d (0x%x) (", i, code, code);
-		cout << toBin(code) <<  endl;
+		//cout << toBin(code) <<  endl;
+		cout << code << endl;
 	}
 
 	return 0;
