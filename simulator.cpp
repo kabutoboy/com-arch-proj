@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include <vector>
 
 using namespace std;
@@ -6,6 +7,10 @@ using namespace std;
 int memSize = 65536;
 int regSize = 8;
 int pc = 0;
+
+bool verbose = false;
+string codePath;
+string outPath;
 
 vector<int32_t> reg(regSize, 0);
 vector<int32_t> mem(memSize, 0);
@@ -63,7 +68,78 @@ void getInstructions() {
 
 }
 
-void printState() {
+void printIns(int32_t i, bool force = false) {
+
+    if (!force && !verbose) {
+        return;
+    }
+
+    int8_t opcode   = getOpcode(i),
+           a        = getRegA(i),
+           b        = getRegB(i),
+           dest     = getDestReg(i);
+    int32_t offset  = getOffsetField(i);
+
+    printf("\n");
+    
+    switch (opcode) {
+
+        // add (r-type)
+        case 0:
+            printf("add\t%d\t%d\t%d\n", a, b, dest);
+            break;
+
+        // nand (r-type)
+        case 1:
+            printf("nand\t%d\t%d\t%d\n", a, b, dest);
+            break;
+
+        // lw (i-type)
+        case 2:
+            printf("lw\t%d\t%d\t%d\n", a, b, offset);
+            break;
+
+        // sw (i-type)
+        case 3:
+            printf("sw\t%d\t%d\t%d\n", a, b, offset);
+            break;
+
+        // beq (i-type)
+        case 4:
+            printf("beq\t%d\t%d\t%d\n", a, b, offset);
+            break;
+
+        // jalr (j-type)
+        case 5:
+            printf("jalr\t%d\t%d\n", a, b);
+            break;
+
+        // halt (o-type)
+        case 6:
+            printf("halt\n");
+            break;
+
+        // noop (o-type)
+        case 7:
+            printf("noop\n");
+            break;
+
+        // this should not happen
+        default:
+            printf("unrecognized opcode %d\n", opcode);
+            break;
+
+    }
+
+    printf("\n");
+
+}
+
+void printState(bool force = false) {
+
+    if (!force && !verbose) {
+        return;
+    }
 
     printf("@@@\n");
     printf("state:\n");
@@ -72,38 +148,62 @@ void printState() {
     //printf("\tmem: \n");
     //
     //for (int j = 0; j < ins.size(); j++) {
-    //
     //    printf("\t\tmem[%d] %d\n", j, mem[j]);
-    //
     //}
 
     printf("\tregisters: \n");
 
     for (int j = 0; j < regSize; j++) {
-
         printf("\t\treg[%d] %d\n", j, reg[j]);
-        
     }
 
     printf("\tstack: \n");
 
     for (int j = reg[5]; j < memSize; j++) {
-
-	if (pc == 0) {
-
-	    break;
-
-	}
-
-	printf("\t\tmem[%d] %d\n", j, mem[j]);
-
+        if (pc == 0) {
+            break;
+        }
+        printf("\t\tmem[%d] %d\n", j, mem[j]);
     }
 
     printf("end state\n");
 
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char *argv[]) {
+
+    if (argc > 1) {
+
+        int pathCount = 0;
+
+        for (int i = 1; i < argc; i++) {
+            char *inp = argv[i];
+            // flag
+            if (inp[0] == '-') {
+                // verbose
+                if (strchr(inp, 'v') != NULL) {
+                    verbose = true;
+                }
+
+            }
+            // file
+            else {
+                switch (pathCount) {
+                    case 0:
+                        codePath = inp;
+                        pathCount++;
+                        break;
+                    case 1:
+                        outPath = inp;
+                        pathCount++;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+    }
 
     getInstructions();
 
@@ -127,7 +227,7 @@ int main(int argc, char* argv[]) {
 
         i = ins[pc];
 
-        //printState();
+        printState();
 
         pc += 1;
         totalIns += 1;
@@ -138,98 +238,60 @@ int main(int argc, char* argv[]) {
                dest     = getDestReg(i);
         int32_t offset  = getOffsetField(i);
 
-        //printf("\n");
+        printIns(i);
         
         switch (opcode) {
 
             // add (r-type)
             case 0:
-
-                //printf("add\t%d\t%d\t%d\n", a, b, dest);
-
                 reg[dest] = reg[a] + reg[b];
-
                 break;
 
             // nand (r-type)
             case 1:
-
-                //printf("nand\t%d\t%d\t%d\n", a, b, dest);
-
                 reg[dest] = ~(reg[a] & reg[b]);
-
                 break;
 
             // lw (i-type)
             case 2:
-
-                //printf("lw\t%d\t%d\t%d\n", a, b, offset);
-
                 reg[b] = mem[reg[a] + offset];
-
                 break;
 
             // sw (i-type)
             case 3:
-
-                //printf("sw\t%d\t%d\t%d\n", a, b, offset);
-
                 mem[reg[a] + offset] = reg[b];
-
                 break;
 
             // beq (i-type)
             case 4:
-
-                //printf("beq\t%d\t%d\t%d\n", a, b, offset);
-
                 if (reg[a] == reg[b]) {
                     pc += offset;
                 }
-
                 break;
 
             // jalr (j-type)
             case 5:
-
-                //printf("jalr\t%d\t%d\n", a, b);
-
                 reg[b] = pc;
                 pc = reg[a];
-
                 break;
 
             // halt (o-type)
             case 6:
-
-                //printf("halt\n");
-
                 halt = true;
-
                 break;
 
             // noop (o-type)
             case 7:
-
-                //printf("noop\n");
-
                 break;
 
             // this should not happen
             default:
-
-                //printf("unrecognized opcode %d\n", opcode);
-                
                 break;
 
         }
 
-        //printf("\n");
-
         if (halt) {
-
-            printState();
-
+            printState(true);
             break;
 
         }
