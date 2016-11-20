@@ -147,8 +147,8 @@ gte	lw	0	6	neg1
 gteTrue	lw	0	3	pos1
 	jalr	7	6
 	noop
-n	.fill	14
-r	.fill	7
+n	.fill	30
+r	.fill	15
 sp	.fill	65536
 cmbAddr	.fill	cmb
 pos1	.fill	1
