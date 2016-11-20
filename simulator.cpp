@@ -85,11 +85,25 @@ void printState() {
         
     }
 
+    printf("\tstack: \n");
+
+    for (int j = reg[5]; j < memSize; j++) {
+
+	if (pc == 0) {
+
+	    break;
+
+	}
+
+	printf("\t\tmem[%d] %d\n", j, mem[j]);
+
+    }
+
     printf("end state\n");
 
 }
 
-int main() {
+int main(int argc, char* argv[]) {
 
     getInstructions();
 
@@ -113,7 +127,7 @@ int main() {
 
         i = ins[pc];
 
-        printState();
+        //printState();
 
         pc += 1;
         totalIns += 1;
@@ -124,14 +138,14 @@ int main() {
                dest     = getDestReg(i);
         int32_t offset  = getOffsetField(i);
 
-        printf("\n");
+        //printf("\n");
         
         switch (opcode) {
 
             // add (r-type)
             case 0:
 
-                printf("add\t%d\t%d\t%d\n", a, b, dest);
+                //printf("add\t%d\t%d\t%d\n", a, b, dest);
 
                 reg[dest] = reg[a] + reg[b];
 
@@ -140,7 +154,7 @@ int main() {
             // nand (r-type)
             case 1:
 
-                printf("nand\t%d\t%d\t%d\n", a, b, dest);
+                //printf("nand\t%d\t%d\t%d\n", a, b, dest);
 
                 reg[dest] = ~(reg[a] & reg[b]);
 
@@ -149,7 +163,7 @@ int main() {
             // lw (i-type)
             case 2:
 
-                printf("lw\t%d\t%d\t%d\n", a, b, offset);
+                //printf("lw\t%d\t%d\t%d\n", a, b, offset);
 
                 reg[b] = mem[reg[a] + offset];
 
@@ -158,7 +172,7 @@ int main() {
             // sw (i-type)
             case 3:
 
-                printf("sw\t%d\t%d\t%d\n", a, b, offset);
+                //printf("sw\t%d\t%d\t%d\n", a, b, offset);
 
                 mem[reg[a] + offset] = reg[b];
 
@@ -167,7 +181,7 @@ int main() {
             // beq (i-type)
             case 4:
 
-                printf("beq\t%d\t%d\t%d\n", a, b, offset);
+                //printf("beq\t%d\t%d\t%d\n", a, b, offset);
 
                 if (reg[a] == reg[b]) {
                     pc += offset;
@@ -178,7 +192,7 @@ int main() {
             // jalr (j-type)
             case 5:
 
-                printf("jalr\t%d\t%d\n", a, b);
+                //printf("jalr\t%d\t%d\n", a, b);
 
                 reg[b] = pc;
                 pc = reg[a];
@@ -188,7 +202,7 @@ int main() {
             // halt (o-type)
             case 6:
 
-                printf("halt\n");
+                //printf("halt\n");
 
                 halt = true;
 
@@ -197,20 +211,20 @@ int main() {
             // noop (o-type)
             case 7:
 
-                printf("noop\n");
+                //printf("noop\n");
 
                 break;
 
             // this should not happen
             default:
 
-                printf("unrecognized opcode %d\n", opcode);
+                //printf("unrecognized opcode %d\n", opcode);
                 
                 break;
 
         }
 
-        printf("\n");
+        //printf("\n");
 
         if (halt) {
 

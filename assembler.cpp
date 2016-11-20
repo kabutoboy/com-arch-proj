@@ -73,6 +73,7 @@ void parseAll() {
 		}
 		// instruction
 		if (foundAt >= line.length()) {
+			machineCode.push_back(code);
 			continue;
 		}
 		lookingAt = foundAt + 1;
@@ -104,6 +105,7 @@ void parseAll() {
 		}
 		// regA
 		if (foundAt >= line.length()) {
+			machineCode.push_back(code);
 			continue;
 		}
 		lookingAt = foundAt + 1;
@@ -133,6 +135,7 @@ void parseAll() {
 		}
 		// regB
 		if (foundAt >= line.length()) {
+			machineCode.push_back(code);
 			continue;
 		}
 		lookingAt = foundAt + 1;
@@ -157,6 +160,7 @@ void parseAll() {
 		}
 		// field3
 		if (foundAt >= line.length()) {
+			machineCode.push_back(code);
 			continue;
 		}
 		lookingAt = foundAt + 1;
