@@ -58,27 +58,30 @@ loopEnd	lw	0	6	pos3
 	halt
 	noop
 mul	add	0	0	3	reset prod
-	lw	0	4	fifteen	load counter
-	lw	0	6	neg1	load neg1
-	add	6	5	5	shift stack pointer
-	sw	0	4	5	push stack
-mulLoop	add	3	3	3	left shift prod
-	lw	0	6	mask	load mask
+	lw	0	6	neg1
+	add	6	5	5
+	sw	5	7	0	
+	lw	0	7	pos1	load counter
+	lw	0	6	mulMsk	load mask
+mulLp	add	3	3	3	left shift prod
 	nand	2	6	4	test mplier.msb
-	lw	0	6	neg1	load neg1
-	beq	4	6	mulSkip	mplier.msb is 0; skip
+	nand	4	4	4
+	beq	0	4	mulSkp	mplier.msb is 0; skip
 	add	1	3	3	add mcand to prod
-mulSkip	add	2	2	2	shift left mplier
-	lw	0	4	5	restore counter
-	lw	0	6	neg1	load neg1
-	add	6	4	4	count down
-	sw	0	4	5	save counter
-	beq	4	0	mulDone	branch if counter is 0
-	lw	0	4	mlpAddr	load mulLoop addr
-	jalr	4	6		loop again
-mulDone	lw	0	6	pos1	load pos1
-	add	6	5	5	pop stack
-	jalr	7	6		return
+mulSkp	add	2	2	2	shift left mplier
+	add	7	7	7	count up
+	beq	6	7	mulDon	done if counter is 2^15
+	beq	0	0	mulLp	quick jump
+mulDon	add	3	3	3	left shift prod
+	nand	2	6	4	test mplier.msb
+	nand	4	4	4
+	beq	0	4	mulSkp2	mplier.msb is 0; skip
+	add	1	3	3	add mcand to prod
+mulSkp2	add	2	2	2	shift left mplier
+	lw	5	7	0
+	lw	0	6	pos1
+	add	6	5	5
+	jalr	7	6
 	noop
 cmb	beq	1	0	cmbN0
 	beq	2	0	cmbRet1
@@ -133,22 +136,21 @@ cmbRet1	lw	0	6	pos1
 	add	0	6	3
 	jalr	7	6
 	noop
-gte	lw	0	6	neg1
-	nand	2	6	4	~y
+gte	nand	2	2	4	~y
 	lw	0	6	pos1
 	add	6	4	4	~y+1 = -y
 	add	1	4	4	x-y
 	lw	0	6	mask
 	nand	6	4	4
-	lw	0	6	neg1
-	beq	4	6	gteTrue
+	nand	4	4	4
+	beq	0	4	gteTrue
 	add	0	0	3
 	jalr	7	6
 gteTrue	lw	0	3	pos1
 	jalr	7	6
 	noop
-n	.fill	7
-r	.fill	3
+n	.fill	30
+r	.fill	15
 sp	.fill	65536
 cmbAddr	.fill	cmb
 pos1	.fill	1
@@ -167,6 +169,7 @@ gteAddr	.fill	gte
 mcand	.fill	32766
 mplier	.fill	10383
 mask	.fill	16384			2^14
+mulMsk	.fill	32768
 fifteen	.fill	15
 mulAddr	.fill	mul
 mlpAddr	.fill	mulLoop

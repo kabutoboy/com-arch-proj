@@ -33,7 +33,7 @@ end1	add	0	6	3
 loopEnd	halt
 	
 sp	.fill	65536
-n	.fill	46
+n	.fill	33
 pos1	.fill	1
 pos2	.fill	2
 neg1	.fill	-1

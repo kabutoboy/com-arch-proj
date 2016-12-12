@@ -28,7 +28,12 @@ string toBin(int n) {
 
 // loose logic
 bool isNumber(string s) {
-	return !s.empty() && s.find_first_not_of("-0123456789") == string::npos;
+    //cout << s << endl;
+    //for (int i = 0; i < s.length(); i++) {
+    //    cout << (int)s[i] << " ";
+    //}
+    //cout << endl;
+    return !s.empty() && s.find_first_not_of("-0123456789") == string::npos;
 }
 
 void parseLabels() {
@@ -125,6 +130,7 @@ void parseAll() {
 				} else {
 					fillVal = labels[field];
 				}
+				//cout << "fillVal is number? " << isNumber(field) << endl;
 				machineCode.push_back(fillVal);
 				continue;
 			}
@@ -176,8 +182,11 @@ void parseAll() {
 			if (isNumber(field)) {
 				destReg = stoi(field);
 				offsetField = stoi(field);
+				//cout << field << "->" << offsetField << endl;
 			} else {
 				offsetField = labels[field];
+                //cout << field << " is not a number / " << offsetField << " / lineAddr is " << lineAddress << " / opcode is " << (int)opcode << endl;
+				//cout << field << "->" << offsetField << endl;
 				if (opcode == 4) {
 					offsetField -= (int16_t)lineAddress + 1;
 				}

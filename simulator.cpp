@@ -7,6 +7,7 @@ using namespace std;
 int memSize = 65536;
 int regSize = 8;
 int pc = 0;
+int outputMode = 0;
 
 bool verbose = false;
 string codePath;
@@ -22,25 +23,38 @@ int32_t maskRegB        = 0b111 << 16;
 int32_t maskDestReg     = 0b111;
 int32_t maskOffsetField = 0b1111111111111111;
 
-int8_t getOpcode(int32_t i) {
+string toBin(int n) {
+	string ret = "";
+	for (int i = 31; i >= 0; i--) {
+		int j = 1 << i;
+		if (n & j) {
+			ret += "1";
+		} else {
+			ret += "0";
+		}
+	}
+	return ret;
+}
+
+uint8_t getOpcode(int32_t i) {
 
     return (i & maskOpcode) >> 22;
 
 }
 
-int8_t getRegA(int32_t i) {
+uint8_t getRegA(int32_t i) {
 
     return (i & maskRegA) >> 19;
 
 }
 
-int8_t getRegB(int32_t i) {
+uint8_t getRegB(int32_t i) {
 
     return (i & maskRegB) >> 16;
 
 }
 
-int8_t getDestReg(int32_t i) {
+uint8_t getDestReg(int32_t i) {
 
     return (i & maskDestReg);
 
@@ -74,7 +88,7 @@ void printIns(int32_t i, bool force = false) {
         return;
     }
 
-    int8_t opcode   = getOpcode(i),
+    uint8_t opcode   = getOpcode(i),
            a        = getRegA(i),
            b        = getRegB(i),
            dest     = getDestReg(i);
@@ -154,7 +168,19 @@ void printState(bool force = false) {
     printf("\tregisters: \n");
 
     for (int j = 0; j < regSize; j++) {
-        printf("\t\treg[%d] %d\n", j, reg[j]);
+	switch (outputMode) {
+
+	    case 0:
+		printf("\t\treg[%d] %d\n", j, reg[j]);
+		break;
+	    case 1:
+		printf("\t\treg[%d] %s\n", j, toBin(reg[j]).c_str());
+		break;
+	    case 2:
+		printf("\t\treg[%d] 0x%08x\n", j, reg[j]);
+		break;
+	
+	}
     }
 
     printf("\tstack: \n");
@@ -163,7 +189,19 @@ void printState(bool force = false) {
         if (pc == 0) {
             break;
         }
-        printf("\t\tmem[%d] %d\n", j, mem[j]);
+	switch (outputMode) {
+
+	    case 0:
+		printf("\t\tmem[%d] %d\n", j, mem[j]);
+		break;
+	    case 1:
+		printf("\t\tmem[%d] %s\n", j, toBin(mem[j]).c_str());
+		break;
+	    case 2:
+		printf("\t\tmem[%d] 0x%08x\n", j, mem[j]);
+		break;
+	
+	}
     }
 
     printf("end state\n");
@@ -184,6 +222,14 @@ int main(int argc, char *argv[]) {
                 if (strchr(inp, 'v') != NULL) {
                     verbose = true;
                 }
+		// binary
+		if (strchr(inp, 'b') != NULL) {
+		    outputMode = 1;
+		}
+		// hex
+		if (strchr(inp, 'h') != NULL) {
+		    outputMode = 2;
+		}
 
             }
             // file
@@ -232,7 +278,7 @@ int main(int argc, char *argv[]) {
         pc += 1;
         totalIns += 1;
 
-        int8_t opcode   = getOpcode(i),
+        uint8_t opcode   = getOpcode(i),
                a        = getRegA(i),
                b        = getRegB(i),
                dest     = getDestReg(i);
