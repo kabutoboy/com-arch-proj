@@ -13,7 +13,7 @@ main	lw	0	5	sp
 	add	0	6	4	i = 2
 	lw	0	6	pos1
 	add	6	1	1	n += 1
-loopBeg	beq	4	1	loopEnd	i == n+1
+lpBeg	beq	4	1	lpEnd	i == n+1
 	lw	0	6	neg1
 	add	4	6	2	n-1
 	add	5	2	2	sp+n-1
@@ -25,12 +25,12 @@ loopBeg	beq	4	1	loopEnd	i == n+1
 	sw	2	3	0	save ret
 	lw	0	6	pos1
 	add	6	4	4	i += 1
-	beq	0	0	loopBeg
+	beq	0	0	lpBeg
 end0	add	0	0	3
-	beq	0	0	loopEnd
+	beq	0	0	lpEnd
 end1	add	0	6	3
-	beq	0	0	loopEnd
-loopEnd	halt
+	beq	0	0	lpEnd
+lpEnd	halt
 	
 sp	.fill	65536
 n	.fill	33

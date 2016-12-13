@@ -16,7 +16,7 @@ main	lw	0	5	sp
 	add	0	0	6	tmp = 0
 	sw	5	6	0	i = 0
 	sw	5	6	1	j = 0
-loopBeg	lw	5	1	0	n = i
+lpBeg	lw	5	1	0	n = i
 	lw	5	2	1	r = j
 	lw	0	6	cmbAddr
 	jalr	6	7		C(n,r)
@@ -43,8 +43,8 @@ incI	lw	5	1	0	restore i
 	sw	5	2	1	save j
 	lw	0	4	n
 	add	6	4	4	n + 1
-	beq	1	4	loopEnd	i == n + 1
-	beq	0	0	loopBeg	quick jump
+	beq	1	4	lpEnd	i == n + 1
+	beq	0	0	lpBeg	quick jump
 incJ	lw	5	2	1	restore j
 	lw	0	6	pos1
 	add	6	2	2	j++
@@ -52,8 +52,8 @@ incJ	lw	5	2	1	restore j
 	lw	0	4	r
 	add	6	4	4	r + 1
 	beq	2	4	incI	j == r + 1
-	beq	0	0	loopBeg	quick jump
-loopEnd	lw	0	6	pos3
+	beq	0	0	lpBeg	quick jump
+lpEnd	lw	0	6	pos3
 	add	6	5	5	shift sp back to A
 	halt
 	noop
@@ -66,17 +66,17 @@ mulLoop	add	3	3	3	left shift prod
 	lw	0	6	mask	load mask
 	nand	2	6	4	test mplier.msb
 	lw	0	6	neg1	load neg1
-	beq	4	6	mulSkip	mplier.msb is 0; skip
+	beq	4	6	mulSkp	mplier.msb is 0; skip
 	add	1	3	3	add mcand to prod
-mulSkip	add	2	2	2	shift left mplier
+mulSkp	add	2	2	2	shift left mplier
 	lw	0	4	5	restore counter
 	lw	0	6	neg1	load neg1
 	add	6	4	4	count down
 	sw	0	4	5	save counter
-	beq	4	0	mulDone	branch if counter is 0
+	beq	4	0	mulDon	branch if counter is 0
 	lw	0	4	mlpAddr	load mulLoop addr
-	jalr	4	6		loop again
-mulDone	lw	0	6	pos1	load pos1
+	jalr	4	6		lp again
+mulDon	lw	0	6	pos1	load pos1
 	add	6	5	5	pop stack
 	jalr	7	6		return
 	noop
@@ -113,19 +113,19 @@ cmb	beq	1	0	cmbN0
 	lw	0	2	pos1	
 	lw	0	6	gteAddr
 	jalr	6	7	
-	beq	3	0	cmbDone	r-1 < 0
+	beq	3	0	cmbDon	r-1 < 0
 	lw	5	4	3	restore (n-1)*R + r
 	lw	0	6	neg1
 	add	6	4	4	(n-1)*R + (r-1)
 	lw	4	4	0	load A[(n-1)*R + (r-1)]
 	lw	5	3	4	restore ret
 	add	4	3	3	accumulate ret
-cmbDone	lw	5	7	0	restore ra
+cmbDon	lw	5	7	0	restore ra
 	lw	0	6	pos5
 	add	6	5	5
 	jalr	7	6
 cmbSet0	add	0	0	3
-	beq	0	0	cmbDone	quick jump without link
+	beq	0	0	cmbDon	quick jump without link
 cmbN0	beq	2	0	cmbRet1
 cmbRet0	add	0	0	3
 	jalr	7	6
@@ -133,8 +133,7 @@ cmbRet1	lw	0	6	pos1
 	add	0	6	3
 	jalr	7	6
 	noop
-gte	lw	0	6	neg1
-	nand	2	6	4	~y
+gte	nand	2	2	4	~y
 	lw	0	6	pos1
 	add	6	4	4	~y+1 = -y
 	add	1	4	4	x-y
@@ -147,8 +146,8 @@ gte	lw	0	6	neg1
 gteTrue	lw	0	3	pos1
 	jalr	7	6
 	noop
-n	.fill	7
-r	.fill	3
+n	.fill	28
+r	.fill	14
 sp	.fill	65536
 cmbAddr	.fill	cmb
 pos1	.fill	1

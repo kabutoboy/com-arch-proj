@@ -93,8 +93,8 @@ r1	lw	0	5	n
 	halt			
 r0	add	0	5	3
 	halt			
-n	.fill	7
-r	.fill	3
+n	.fill	20
+r	.fill	10
 dec	.fill	-1
 one	.fill	1
 mem	.fill	99

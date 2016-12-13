@@ -10,6 +10,7 @@ int pc = 0;
 int outputMode = 0;
 
 bool verbose = false;
+bool printMem = false;
 string codePath;
 string outPath;
 
@@ -183,24 +184,26 @@ void printState(bool force = false) {
 	}
     }
 
-    printf("\tstack: \n");
+    if (printMem) {
+	printf("\tstack: \n");
 
-    for (int j = reg[5]; j < memSize; j++) {
-        if (pc == 0) {
-            break;
-        }
-	switch (outputMode) {
+	for (int j = reg[5]; j < memSize; j++) {
+	    if (pc == 0) {
+		break;
+	    }
+	    switch (outputMode) {
 
-	    case 0:
-		printf("\t\tmem[%d] %d\n", j, mem[j]);
-		break;
-	    case 1:
-		printf("\t\tmem[%d] %s\n", j, toBin(mem[j]).c_str());
-		break;
-	    case 2:
-		printf("\t\tmem[%d] 0x%08x\n", j, mem[j]);
-		break;
-	
+		case 0:
+		    printf("\t\tmem[%d] %d\n", j, mem[j]);
+		    break;
+		case 1:
+		    printf("\t\tmem[%d] %s\n", j, toBin(mem[j]).c_str());
+		    break;
+		case 2:
+		    printf("\t\tmem[%d] 0x%08x\n", j, mem[j]);
+		    break;
+	    
+	    }
 	}
     }
 
@@ -229,6 +232,10 @@ int main(int argc, char *argv[]) {
 		// hex
 		if (strchr(inp, 'h') != NULL) {
 		    outputMode = 2;
+		}
+		// mem
+		if (strchr(inp, 'm') != NULL) {
+		    printMem = true;
 		}
 
             }
