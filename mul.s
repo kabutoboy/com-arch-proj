@@ -21,8 +21,8 @@ done	add	3	3	3	left shift prod
 skip2	add	2	2	2	shift left mplier
 	halt
 sp	.fill	65536			last address
-mcand	.fill	32766
-mplier	.fill	10383
+mcand	.fill	65535
+mplier	.fill	5
 mask	.fill	32768			1000...
 pos1	.fill	1
 neg1	.fill	-1

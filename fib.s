@@ -30,7 +30,7 @@ ret0	add	0	0	3
 	jalr	7	6
 ret1	add	0	4	3
 	jalr	7	6
-n	.fill	33
+n	.fill	30
 pos1	.fill	1
 pos2	.fill	2
 pos3	.fill	3

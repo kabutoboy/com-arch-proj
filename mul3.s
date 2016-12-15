@@ -34,8 +34,8 @@ loop	add	3	3	3
 	beq	0	0	loop	quick jump
 done	halt
 sp	.fill	65536			
-mcand	.fill	32766
-mplier	.fill	10383
+mcand	.fill	65535
+mplier	.fill	5
 mask1	.fill	32768			1000...
 mask2	.fill	49152			1100...
 mask4	.fill	61440			1111...

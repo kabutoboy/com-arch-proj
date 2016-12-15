@@ -62,8 +62,8 @@ ret	lw	0	6	pos3
 	halt				halt
 	noop
 sp	.fill	65536			
-mcand	.fill	32766
-mplier	.fill	10383
+mcand	.fill	-1
+mplier	.fill	-5
 mask1	.fill	32768			1000...
 mask2	.fill	49152			1100...
 mask4	.fill	61440			1111...
